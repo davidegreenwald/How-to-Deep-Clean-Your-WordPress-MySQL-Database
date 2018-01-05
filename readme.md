@@ -14,7 +14,7 @@ Key things to watch for:
 * Transient size in the `wp_options` table
 * Orphaned autoload options in `wp_options` 
 * Revision size in the `wp_posts` table 
-* Funny business or orphaned data in `wp_postsmeta`—like a plugin taking up 100MB duplicating your post content. Yes, I've seen that, too.
+* Funny business or orphaned data in `wp_postmeta`—like a plugin taking up 100MB duplicating your post content. Yes, I've seen that, too.
 * Large tables with unnecessary plugin logs, such as EWWW or WordFence
 * Spam comments and comments in general, honestly.
 
