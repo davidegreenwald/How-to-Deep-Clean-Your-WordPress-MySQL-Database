@@ -36,9 +36,9 @@ SELECT (SUM(DATA_LENGTH + INDEX_LENGTH))/1048567 FROM INFORMATION_SCHEMA.TABLES
 
 ## `wp_users` Table
 
-_Not clean-up, just a step I take in evaulating a database._
+_Not clean-up, just a step I take in evaluating a database._
 
-Count the rows	
+Count the rows—always do this first before dumping 10,000 rows into your CLI.	
 ```
 SELECT COUNT(*) FROM wp_users;
 ```
