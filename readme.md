@@ -16,6 +16,7 @@ Key things to watch for:
 * Revision size in the `wp_posts` table 
 * Funny business or orphaned data in `wp_postsmeta`—like a plugin taking up 100MB duplicating your post content. Yes, I've seen that, too.
 * Large tables with unnecessary plugin logs, such as EWWW or WordFence
+* Spam comments and comments in general, honestly.
 
 ---
 
@@ -36,10 +37,14 @@ SELECT (SUM(DATA_LENGTH + INDEX_LENGTH))/1048567 FROM INFORMATION_SCHEMA.TABLES
 ## `wp_users` Table
 
 Count the rows	
-`SELECT COUNT(*) FROM wp_users;`
+```
+SELECT COUNT(*) FROM wp_users;
+```
 
 Check the user list
-`SELECT * FROM wp_users;`
+```
+SELECT * FROM wp_users;
+```
 
 Security: check for the “admin” user
 ```
@@ -60,7 +65,9 @@ WHERE wp_users.id IS NULL;
 ```
 
 Check the list of meta keys for plugin additions - WordPress uses 20+ by default.
-`SELECT DISTINCT meta_key FROM wp_usermeta;`
+```
+SELECT DISTINCT meta_key FROM wp_usermeta;
+```
 
 Security: check who the admins are
 ```
@@ -109,7 +116,9 @@ ORDER BY `Data_in_MB` DESC;
 ```
 
 Delete all revisions
-`DELETE FROM wp_posts WHERE post_type = 'revision';`
+```
+DELETE FROM wp_posts WHERE post_type = 'revision';
+```
 
 ## `wp_postmeta` Table
 
@@ -171,9 +180,9 @@ WHERE option_name LIKE ('%\_transient\_%') AND autoload = 'yes';
 
 Delete all transients:
 
-_You might want to delete by plugin namespace or a date window instead of deleting all of them, especially if you have current e-commerce or logged-in user sessions running via this method.
+_You might want to delete by plugin namespace or a date window instead of deleting all of them, especially if you have current e-commerce or logged-in user sessions running via this method._
 
-If you're using an object cache plugin such as Memcached or Redis, you might not have transients in your database at all. Congrats!_
+_If you're using an object cache plugin such as Memcached or Redis, you might not have transients in your database at all. Congrats!_
 
 ```
 DELETE FROM wp_options WHERE option_name LIKE ('%\_transient\_%');
@@ -199,8 +208,6 @@ See all autoload options:
 
 _This is a good method to check for orphaned options still loading on your site every time even after you deleted the plugin that created them. I guarantee you have at least a dozen._
 
-`SELECT option_name FROM wp_options WHERE autoload = 'yes';`
-
-
-
-
+```
+SELECT option_name FROM wp_options WHERE autoload = 'yes';
+```
