@@ -8,7 +8,7 @@ After I deleted them, the `wp_options` table went from 285 MB to 2. Seriously.
 
 Don't let this happen to your WordPress website.
 
-Here is an extensive list of MySQL CLI snippets to inspect, diagnose, and clean up your WordPress database. You can also use this SQL code inside myPHPAdmin.
+Here is an extensive list of MySQL CLI snippets to inspect, diagnose, and clean up your WordPress database. You can also use this SQL code inside phpMyAdmin.
 
 Key things to watch for: 
 * Transient size in the `wp_options` table
