@@ -59,11 +59,11 @@ SELECT * FROM wp_users
 Check for orphaned metadata by listing usermeta user IDs not found in users:
 ```
 SELECT DISTINCT user_id 
-FROM wp_usermeta
-LEFT JOIN 
-wp_users
-ON wp_users.id = wp_usermeta.user_id
-WHERE wp_users.id IS NULL;
+  FROM wp_usermeta
+  LEFT JOIN 
+  wp_users
+  ON wp_users.id = wp_usermeta.user_id
+  WHERE wp_users.id IS NULL;
 ```
 
 Check the list of meta keys for plugin additions - WordPress uses 20+ by default.
@@ -74,47 +74,38 @@ SELECT DISTINCT meta_key FROM wp_usermeta;
 Security: check who the admins are
 ```
 SELECT *
-FROM wp_usermeta;
-WHERE meta_value LIKE ('%administrator%');
+  FROM wp_usermeta;
+  WHERE meta_value LIKE ('%administrator%');
 ```
 
 Or search for all user roles:
 ```
-SELECT * FROM wp_usermeta
-WHERE `meta_key` = 'wp_capabilities' OR `meta_key` = 'wp_user_level'
-ORDER BY user_id;
+SELECT * 
+  FROM wp_usermeta
+  WHERE `meta_key` = 'wp_capabilities' 
+  OR `meta_key` = 'wp_user_level'
+  ORDER BY user_id;
 ```
 
 ## `wp-posts` Table
 
 Check post type, data size, and row counts. This is a good way to check for table clutter from post revisions.
 ```
-SELECT post_type, COUNT(*) AS `Rows`, 
-(SUM(
-LENGTH(ID)
-+LENGTH(post_author)
-+LENGTH(post_date)
-+LENGTH(post_date_gmt)
-+LENGTH(post_content)
-+LENGTH(post_title)
-+LENGTH(post_excerpt)
-+LENGTH(post_status)
-+LENGTH(comment_status)
-+LENGTH(ping_status)
-+LENGTH(post_password)
-+LENGTH(post_name)
-+LENGTH(to_ping)
-+LENGTH(pinged)
-+LENGTH(post_modified)
-+LENGTH(post_modified_gmt)
-+LENGTH(post_parent)
-+LENGTH(guid)
-+LENGTH(menu_order)
-+LENGTH(post_type)
-))/1048567 AS `Data_in_MB`
-FROM wp_posts
-GROUP BY post_type
-ORDER BY `Data_in_MB` DESC;
+SELECT 
+  post_type, 
+  COUNT(*) AS `Rows`,
+  ROUND(
+    SUM(
+      LENGTH(
+        CONCAT(
+          ID, post_author, post_date, post_date_gmt, post_content, post_title, post_excerpt, post_status, comment_status, ping_status, post_password, post_name, to_ping, pinged, post_modified, post_modified_gmt, post_parent, guid, menu_order, post_type
+        )
+      )
+    )/1048567, 2
+  ) AS `Data_in_MB`
+  FROM wp_posts
+  GROUP BY post_type
+  ORDER BY `Data_in_MB` DESC;
 ```
 
 Delete all revisions
@@ -128,17 +119,18 @@ Check `wp_postmeta` keys, rows, and data size.
 
 ```
 SELECT
-meta_key, COUNT(*) AS `Rows`,  
-(SUM(
-LENGTH(meta_id)
-+LENGTH(post_id)
-+LENGTH(meta_key)
-+LENGTH(meta_value)
- ))/1048567
-AS `Size_in_MB`
-FROM wp_postmeta
-GROUP BY meta_key
-ORDER BY `Size_in_MB` DESC;
+  meta_key, 
+  COUNT(*) AS `Rows`,  
+  ROUND(
+    SUM(
+      LENGTH(
+        CONCAT(meta_id, post_id, meta_key, meta_value)
+      )
+    )/1048567, 2
+  ) AS `Size_in_MB`
+  FROM wp_postmeta
+  GROUP BY meta_key
+  ORDER BY `Size_in_MB` DESC;
 ```
 
 ## `wp_options` Table:
@@ -146,28 +138,28 @@ ORDER BY `Size_in_MB` DESC;
 Get table size
 ```
 SELECT  
-(SUM(
-LENGTH(option_id)
-+LENGTH(option_name)
-+LENGTH(option_value)
-+LENGTH(autoload)
- ))/1048567
-AS `Options_Table_Size_In_MB`
-FROM wp_options;
+  ROUND(
+    SUM(
+      LENGTH(
+        CONCAT(option_id, option_name, option_value, autoload)
+      )
+    )/1048567, 2
+  ) AS `Options_Table_Size_In_MB`
+  FROM wp_options;
 ```
 
 Get transient size and row count
 
 ```
 SELECT 
-COUNT(*) AS `Transients_Rows`, 
-(SUM(
-LENGTH(option_id)
-+LENGTH(option_name)
-+LENGTH(option_value)
-+LENGTH(autoload)
- ))/1048567
-AS `Transients_data_in_MB`
+  COUNT(*) AS `Transients_Rows`, 
+  ROUND(
+    SUM(
+      LENGTH(
+        CONCAT(option_id, option_name, option_value, autoload)
+      )
+    )/1048567, 2
+  ) AS `Transients_data_in_MB`
 FROM wp_options
 WHERE option_name LIKE ('%\_transient\_%');
 ```
@@ -194,14 +186,14 @@ Get the size and row count of options which autoload
 
 ```
 SELECT
-COUNT(*) AS `Autoload_Row_Count`,
-(SUM(
-LENGTH(option_id)
-+LENGTH(option_name)
-+LENGTH(option_value)
-+LENGTH(autoload)
-))/1048567 
-AS `Autoload_Data_in_MB`
+  COUNT(*) AS `Autoload_Row_Count`,
+  ROUND(
+    SUM(
+      LENGTH(
+        CONCAT(option_id, option_name, option_value, autoload)
+      )
+    )/1048567, 2
+  ) AS `Autoload_Data_in_MB`
 FROM wp_options
 WHERE autoload = 'yes';
 ```
