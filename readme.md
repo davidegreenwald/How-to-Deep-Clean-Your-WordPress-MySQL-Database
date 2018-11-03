@@ -10,13 +10,19 @@ Don't let this happen to your WordPress website.
 
 Here is an extensive list of MySQL CLI snippets to inspect, diagnose, and clean up your WordPress database. You can also use this SQL code inside phpMyAdmin.
 
-Key things to watch for: 
+Key things to watch for:
+
+Spring cleaning: you can fix these with a plugin such as WP-Optimize or clean them by hand. 
+* Revision size in the `wp_posts` table 
+* Spam and trashed comments in `wp_comments`
+
+Advanced cleaning: 
+
+* The `wp_options` table loads on every WordPress page and is crucial to optimize—aim for under 2 MB and 500 rows.
 * Transient size in the `wp_options` table
 * Orphaned autoload options in `wp_options` 
-* Revision size in the `wp_posts` table 
 * Funny business or orphaned data in `wp_postmeta`—like a plugin taking up 100MB duplicating your post content. Yes, I've seen that, too.
 * Large tables with unnecessary plugin logs, such as EWWW or WordFence
-* Spam comments and comments in general, honestly.
 
 ---
 
@@ -48,7 +54,7 @@ Check the user list
 SELECT * FROM wp_users;
 ```
 
-Security: check for the “admin” user
+Security: check for the “admin” user. Use something else for your site admin as this is a default and thus a hacker target.
 ```
 SELECT * FROM wp_users
 	WHERE user_login = 'admin';
@@ -115,7 +121,7 @@ DELETE FROM wp_posts WHERE post_type = 'revision';
 
 ## `wp_postmeta` Table
 
-Check `wp_postmeta` keys, rows, and data size.
+Check `wp_postmeta` keys, rows, and data size. This will give you a grouped, ranked list of the meta keys, which you can ID to the plugins that generated them with their naming prefix. 
 
 ```
 SELECT
@@ -132,6 +138,8 @@ SELECT
   GROUP BY meta_key
   ORDER BY `Size_in_MB` DESC;
 ```
+
+See also this [in-depth article](https://www.rawkblog.com/2018/01/how-to-clean-up-the-wordpress-wp_postmeta-database-table/) on digging through meta keys. 
 
 ## `wp_options` Table:
 
