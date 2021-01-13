@@ -80,7 +80,7 @@ SELECT DISTINCT meta_key FROM wp_usermeta;
 Security: check who the admins are
 ```
 SELECT *
-  FROM wp_usermeta;
+  FROM wp_usermeta
   WHERE meta_value LIKE ('%administrator%');
 ```
 
